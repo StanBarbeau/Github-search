@@ -9,14 +9,14 @@
 	var table_body = $('#table_body');
 	var form = $('#form-search');
 	var error_well = $('#error-well');
-	var data = {};
+	var data = [];
 	
 	// -- Declaration des fonctions --
 	function projectRequest( servData, textStatus, jqXHR )
 	{
 		// console.log(jqXHR);
 		// alert('test');
-		console.log(servData);
+		// console.log(servData);
 		data = servData;
 		// console.log(data);
 		$.each(data, function (index, value){
@@ -32,7 +32,7 @@
 			});
 		});
 		afficheData(data);
-		$('#project_name').html("GitHub " + $('#search-user-input').val() + "/" + $('#search-projet-input').val()).show();
+		$('#project_name').html("GitHub : " + $('#search-user-input').val() + "/" + $('#search-projet-input').val()).show();
 		$(error_well).hide();
 		$(col_result).show();
 		
@@ -41,16 +41,15 @@
 	function afficheData( givenData )
 	{
 		$(table_body).html("");
+		// console.log(data);
 		$.each(givenData, function(index, value){
 			// console.log(index + value);
 			// console.log(value.commit.author);
 			
 			var obj = {
 				'cont': {"user": value.author.login, "link": value.author.html_url},
-				'mail': ((value.author.email)?"plouf":value.author.email),
 				'commits': value.total,
 				'code': value.codeline,
-				'job': "idk",
 			};
 			var ligne = createLine( obj );
 			// console.log(ligne);
@@ -61,6 +60,7 @@
 	
 	function createLine( obj )
 	{
+		// console.log(obj);
 		var ligne = $("<tr></tr>");
 		$.each(Object.keys(obj), function(index, value){
 			// console.log(obj[value]);
@@ -71,7 +71,7 @@
 					
 				break;
 				case 'code':
-					$(col).html("Added : " + value.a + " / Deleted : " + value.d + " / Commits : " + value.c);
+					$(col).html("Added : " + obj[value].a + " / Deleted : " + obj[value].d + " / Commits : " + obj[value].c);
 				break;
 				default:
 					$(col).html(obj[value]);
@@ -110,6 +110,44 @@
 		}
 		};
 		$.ajax(requestObj);
+	});
+	
+	$('#cont-head').click(function(e){
+		$(e.target).attr("value", $(e.target).attr("value")*-1);
+		// console.log($(e.target).attr("value"));
+		data.sort(function(a, b){
+			var array = [a.author.login, b.author.login].sort();
+			var flag;
+			if (array[0] === array[1]){
+				flag = 0;
+			} else if (array[1] === a.author.login){
+				flag = 1;
+			} else {
+				flag = -1;
+			}
+			return (flag*$(e.target).attr("value"));
+		});
+		afficheData(data);
+	});
+	
+	$('#commits-head').click(function(e){
+		$(e.target).attr("value", $(e.target).attr("value")*-1);
+		// console.log($(e.target).attr("value"));
+		data.sort(function(a, b){
+			
+			return ((a.total - b.total)*$(e.target).attr("value"));
+		});
+		afficheData(data);
+	});
+	
+	$('#code-head').click(function(e){
+		$(e.target).attr("value", $(e.target).attr("value")*-1);
+		// console.log($(e.target).attr("value"));
+		data.sort(function(a, b){
+			
+			return ((a.codeline.a - b.codeline.a)*$(e.target).attr("value"));
+		});
+		afficheData(data);
 	});
 	
 	// -- code additionnel --
