@@ -16,28 +16,21 @@
 	{
 		// console.log(jqXHR);
 		// alert('test');
-		// console.log(servData);
-		data = {};
-		$.each(servData, function(index, value){
-			// console.log(data);
-			// console.log(Object.keys(data));
-			if ( $.inArray(value.commit.author.name, Object.keys(data)) > -1 ){
-				// console.log(value);
-				data[value.commit.author.name].code.push(value);
-			} else if(value.author !== undefined && value.author !== null ) {
-				// console.log(value);
-				data[value.commit.author.name] = {
-					"email" : value.commit.author.email,
-					"link" : value.author.html_url,
-					"code" : [value],
-					"job" : "idk",
-				};
-			}
-			
-		});
+		console.log(servData);
+		data = servData;
 		// console.log(data);
-		// request for jobneed info.
-		$.each();
+		$.each(data, function (index, value){
+			value.codeline = {
+				"a":0,
+				"d":0,
+				"c":0,
+			};
+			$.each( value.weeks , function(indexArray, valueArray){
+				value.codeline.a += valueArray.a;
+				value.codeline.d += valueArray.d;
+				value.codeline.c += valueArray.c;
+			});
+		});
 		afficheData(data);
 		$('#project_name').html("GitHub " + $('#search-user-input').val() + "/" + $('#search-projet-input').val()).show();
 		$(error_well).hide();
@@ -51,12 +44,13 @@
 		$.each(givenData, function(index, value){
 			// console.log(index + value);
 			// console.log(value.commit.author);
+			
 			var obj = {
-				'cont': {"user": index, "link":value.link},
-				'mail': value.email,
-				'commits': value.code.length,
-				'code': value.code,
-				'job': value.job,
+				'cont': {"user": value.author.login, "link": value.author.html_url},
+				'mail': ((value.author.email)?"plouf":value.author.email),
+				'commits': value.total,
+				'code': value.codeline,
+				'job': "idk",
 			};
 			var ligne = createLine( obj );
 			// console.log(ligne);
@@ -77,10 +71,7 @@
 					
 				break;
 				case 'code':
-					$.each(obj[value], function(codeIndex, codeCommit){
-						// console.log(codeCommit);
-						$('<a></a>').attr("href", codeCommit.html_url).html(codeCommit.commit.message + "<br/>").appendTo(col);
-					});
+					$(col).html("Added : " + value.a + " / Deleted : " + value.d + " / Commits : " + value.c);
 				break;
 				default:
 					$(col).html(obj[value]);
@@ -100,23 +91,23 @@
 		var searchProject = $('#search-projet-input').val();
 		var searchUser = $('#search-user-input').val();
 		// alert(searchProject + searchUser);
-		var requestObj = {
-			url: "https://api.github.com/repos/" + searchUser + " / " + searchProject + "/commits",
-			accepts: {
-				githubType: "application/vnd.github.v3+json",
-			},
-			dataType:"json",
-			type: "GET",
-			headers:{Accept: "application/vnd.github.v3+json"},
-			success: projectRequest,
-			error: function(jqXHR, textStatus, errorThrown){
-				// alert('server error !');
-				$("#project_name").html("Erreur !");
-				$(col_result).hide();
-				$(error_well).show();
-				$(error_well).html(errorThrown + ", " + JSON.parse(jqXHR.responseText).message);
-				// console.log(jqXHR);
-			}
+		var requestObj = 
+		{url: "https://api.github.com/repos/" + searchUser + "/" + searchProject + "/stats/contributors",
+		accepts: {
+			githubType: "application/vnd.github.v3+json",
+		},
+		dataType:"json",
+		type: "GET",
+		headers:{Accept: "application/vnd.github.v3+json"},
+		success: projectRequest,
+		error: function(jqXHR, textStatus, errorThrown){
+			// alert('server error !');
+			$("#project_name").html("Erreur !");
+			$(col_result).hide();
+			$(error_well).show();
+			$(error_well).html(errorThrown + ", " + JSON.parse(jqXHR.responseText).message);
+			console.log(jqXHR);
+		}
 		};
 		$.ajax(requestObj);
 	});
