@@ -4,3 +4,6 @@
 	border-color: red;
 	color: black;
 }
+table > thead > tr{
+	cursor: pointer;
+}
