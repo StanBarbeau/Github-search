@@ -1,9 +1,9 @@
+// isolation and execution.
 
-// On isole et on execute.
 (function (){
 	
 	// ---- initialisation ----
-	// -- Recuperation des variables --
+	// -- var recuperation --
 	
 	var col_result = $('#col-result');
 	var table_body = $('#table_body');
@@ -11,7 +11,7 @@
 	var error_well = $('#error-well');
 	var data = [];
 	
-	// -- Declaration des fonctions --
+	// -- functions declaration --
 	function projectRequest( servData, textStatus, jqXHR )
 	{
 		// console.log(jqXHR);
@@ -43,25 +43,51 @@
 		$(table_body).html("");
 		// console.log(data);
 		$.each(givenData, function(index, value){
-			// console.log(index + value);
-			// console.log(value.commit.author);
+			// console.log(value);
 			
 			var obj = {
-				'cont': {"user": value.author.login, "link": value.author.html_url},
+				'cont': {"user": value.author.login, "link": value.author.html_url, "id" : value.author.id},
+				'mail' : ((value.author.mail)?value.author.mail:"need more info?"),
 				'commits': value.total,
 				'code': value.codeline,
+				'job': ((value.author.job)?value.author.job:"need more info?"),
+				'location': ((value.author.location)?value.author.location:"need more info?"),
+				
 			};
-			var ligne = createLine( obj );
+			var ligne = createLine( obj, index );
 			// console.log(ligne);
 			
 			$(ligne).appendTo(table_body);
+			// append an event "onclick" to the table line, in order to update it with an ajax query
+			$(ligne).click(function (e){
+				// Seetings of the ajax query
+				var userSettings = {
+					url: value.author.url,
+					accepts: {
+						githubType: "application/vnd.github.v3+json",
+					},
+					dataType:"json",
+					type: "GET",
+					headers:{Accept: "application/vnd.github.v3+json"},
+					success: userRequest,
+					error: function(jqXHR, textStatus, errorThrown){
+						// alert('server error !');
+			
+						$(error_well).show();
+						$(error_well).html(errorThrown + ", " + JSON.parse(jqXHR.responseText).message);
+						console.log(jqXHR);
+					}
+				}
+				$.ajax(userSettings);
+				
+			});
 		});
 	}
 	
-	function createLine( obj )
+	function createLine( obj, nbr )
 	{
 		// console.log(obj);
-		var ligne = $("<tr></tr>");
+		var ligne = $("<tr></tr>").attr('id', "user-" + obj.cont.id).attr('value', nbr);
 		$.each(Object.keys(obj), function(index, value){
 			// console.log(obj[value]);
 			var col = $('<th></th>').attr('name', value);
@@ -83,8 +109,51 @@
 		return ligne
 	}
 	
+	function userRequest(servData, textStatus, jqXHR)
+	{
+		var ligne = $('#user-' + servData.id);
+		var indexData = $(ligne).attr('value');
+		
+		// console.log(indexData);
+		// console.log(servData);
+		// console.log(ligne);
+		// console.log(data);
+		
+		// get the mail column and modify the data array.
+		var mailCol = $(ligne).children('th[name="mail"]');
+		if (servData.email){
+			$(mailCol).html(servData.email);
+			data[indexData].author.mail = servData.email;
+		} else {
+			$(mailCol).html("non-public");
+			data[indexData].author.mail = "non-public";
+		}
+		
+		// get the hireable column and modify the data array.
+		var jobCol = $(ligne).children('th[name="job"]');
+		if (servData.hireable !== null){
+			$(jobCol).html((servData.hireable)?"Yes !":"No...");
+			data[indexData].author.job = (servData.hireable)?"Yes !":"No...";
+		} else {
+			$(jobCol).html("non-public");
+			data[indexData].author.job = "non-public";
+		}
+		
+		// get the location column and modify the data array.
+		var locCol = $(ligne).children('th[name="location"]');
+		if (servData.location){
+			$(locCol).html(servData.location);
+			data[indexData].author.location = servData.location;
+		} else {
+			$(locCol).html("non-public");
+			data[indexData].author.location = "non-public";
+		}
+		
+		// console.log($(ligne).children('th[name=mail]'));
+	}
+	
 	// ---- MAIN CODE ----
-	// -- gestionnaire d'evement
+	// -- events --
 	
 	$(form).submit(function (e){
 		e.preventDefault();
@@ -150,7 +219,7 @@
 		afficheData(data);
 	});
 	
-	// -- code additionnel --
+	// -- add code --
 	$(col_result).hide();
 	$(error_well).hide();
 	// console.log($(table_line));
