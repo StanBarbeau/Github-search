@@ -30,8 +30,9 @@
 		<div class="col-sm-12">
 		
 		
-			<div class="row well">
-			
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="row well">
 				<form class="form-horizontal" method="get" id="form-search" name="form-search">
 					<div class="form-group">
 						<label class="col-sm-2 control-label" for="search-user-input">GitHub User : </label>
@@ -47,11 +48,32 @@
 					</div>
 					<div class="form-group"> 
 						<div class="col-sm-2 col-sm-offset-5">	
-							<input class="form-control btn btn-default" type="submit" name="submit" id="id">
+							<input class="form-control btn btn-default" type="submit" name="search-submit" id="search-submit">
 						</div>
 					</div>
 				</form>
-			
+					</div>
+				</div>
+				<!--
+				<div class="col-sm-4">
+					<div class="row well">
+						<form class="form-horizontal" method="post" id="form-auth" name="form-auth">
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="auth-user-input">User : </label>
+								<div class="col-sm-8">
+									<input class="form-control" type="text" name="auth-user-input" id="auth-user-input" placeholder="Type your github user name...">
+								</div>
+							</div>
+							
+							<div class="form-group"> 
+								<div class="col-sm-4 col-sm-offset-4">	
+									<input class="form-control btn btn-default" type="submit" name="auth-submit" id="auth-submit">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				-->
 			</div>
 			
 			<div id="error-well" class="well row error-well">

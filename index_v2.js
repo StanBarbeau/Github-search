@@ -8,8 +8,10 @@
 	var col_result = $('#col-result');
 	var table_body = $('#table_body');
 	var form = $('#form-search');
+	// var authForm = $("#form-auth");
 	var error_well = $('#error-well');
 	var data = [];
+	// var userName = "";
 	
 	// -- functions declaration --
 	function projectRequest( servData, textStatus, jqXHR )
