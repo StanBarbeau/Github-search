@@ -25,6 +25,9 @@
 				"d":0,
 				"c":0,
 			};
+			value.mail = (value.mail)?value.mail:"Need more info?";
+			value.job = (value.job)?value.job:"Need more info?";
+			value.location = (value.location)?value.location:"Need more info?";
 			$.each( value.weeks , function(indexArray, valueArray){
 				value.codeline.a += valueArray.a;
 				value.codeline.d += valueArray.d;
@@ -198,6 +201,61 @@
 		});
 		afficheData(data);
 	});
+	
+	$('#mail-head').click(function(e){
+		$(e.target).attr("value", $(e.target).attr("value")*-1);
+		// console.log($(e.target).attr("value"));
+		data.sort(function(a, b){
+			var array = [a.author.mail, b.author.mail].sort();
+			var flag;
+			if (array[0] === array[1]){
+				flag = 0;
+			} else if (array[1] === a.author.mail){
+				flag = 1;
+			} else {
+				flag = -1;
+			}
+			return (flag*$(e.target).attr("value"));
+		});
+		afficheData(data);
+	});
+	
+	$('#country-head').click(function(e){
+		$(e.target).attr("value", $(e.target).attr("value")*-1);
+		// console.log($(e.target).attr("value"));
+		data.sort(function(a, b){
+			var array = [a.author.location, b.author.location].sort();
+			var flag;
+			if (array[0] === array[1]){
+				flag = 0;
+			} else if (array[1] === a.author.location){
+				flag = 1;
+			} else {
+				flag = -1;
+			}
+			return (flag*$(e.target).attr("value"));
+		});
+		afficheData(data);
+	});
+	
+	$('#job-head').click(function(e){
+		$(e.target).attr("value", $(e.target).attr("value")*-1);
+		// console.log($(e.target).attr("value"));
+		data.sort(function(a, b){
+			var array = [a.author.job, b.author.job].sort();
+			var flag;
+			if (array[0] === array[1]){
+				flag = 0;
+			} else if (array[1] === a.author.job){
+				flag = 1;
+			} else {
+				flag = -1;
+			}
+			return (flag*$(e.target).attr("value"));
+		});
+		afficheData(data);
+	});
+	
 	
 	$('#commits-head').click(function(e){
 		$(e.target).attr("value", $(e.target).attr("value")*-1);
