@@ -190,11 +190,11 @@
 		$(e.target).attr("value", $(e.target).attr("value")*-1);
 		// console.log($(e.target).attr("value"));
 		data.sort(function(a, b){
-			var array = [a.author.login, b.author.login].sort();
+			var array = [a.author.login.toLowerCase(), b.author.login.toLowerCase()].sort();
 			var flag;
 			if (array[0] === array[1]){
 				flag = 0;
-			} else if (array[1] === a.author.login){
+			} else if (array[1] === a.author.login.toLowerCase()){
 				flag = 1;
 			} else {
 				flag = -1;
@@ -208,11 +208,11 @@
 		$(e.target).attr("value", $(e.target).attr("value")*-1);
 		// console.log($(e.target).attr("value"));
 		data.sort(function(a, b){
-			var array = [a.author.mail, b.author.mail].sort();
+			var array = [a.author.mail.toLowerCase(), b.author.mail.toLowerCase()].sort();
 			var flag;
 			if (array[0] === array[1]){
 				flag = 0;
-			} else if (array[1] === a.author.mail){
+			} else if (array[1] === a.author.mail.toLowerCase()){
 				flag = 1;
 			} else {
 				flag = -1;
@@ -226,11 +226,11 @@
 		$(e.target).attr("value", $(e.target).attr("value")*-1);
 		// console.log($(e.target).attr("value"));
 		data.sort(function(a, b){
-			var array = [a.author.location, b.author.location].sort();
+			var array = [a.author.location.toLowerCase(), b.author.location.toLowerCase()].sort();
 			var flag;
 			if (array[0] === array[1]){
 				flag = 0;
-			} else if (array[1] === a.author.location){
+			} else if (array[1] === a.author.location.toLowerCase()){
 				flag = 1;
 			} else {
 				flag = -1;
@@ -244,11 +244,11 @@
 		$(e.target).attr("value", $(e.target).attr("value")*-1);
 		// console.log($(e.target).attr("value"));
 		data.sort(function(a, b){
-			var array = [a.author.job, b.author.job].sort();
+			var array = [a.author.job.toLowerCase(), b.author.job.toLowerCase()].sort();
 			var flag;
 			if (array[0] === array[1]){
 				flag = 0;
-			} else if (array[1] === a.author.job){
+			} else if (array[1] === a.author.job.toLowerCase()){
 				flag = 1;
 			} else {
 				flag = -1;
